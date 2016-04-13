@@ -69,32 +69,7 @@ def index():
     names.append(result['name'])  # can also be accessed using result[0]
   cursor.close()
 
-  #
-  # Flask uses Jinja templates, which is an extension to HTML where you can
-  # pass data to a template and dynamically generate HTML based on the data
-  # (you can think of it as simple PHP)
-  # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
-  #
-  # You can see an example template in templates/index.html
-  #
-  # context are the variables that are passed to the template.
-  # for example, "data" key in the context variable defined below will be 
-  # accessible as a variable in index.html:
-  #
-  #     # will print: [u'grace hopper', u'alan turing', u'ada lovelace']
-  #     <div>{{data}}</div>
-  #     
-  #     # creates a <div> tag for each element in data
-  #     # will print: 
-  #     #
-  #     #   <div>grace hopper</div>
-  #     #   <div>alan turing</div>
-  #     #   <div>ada lovelace</div>
-  #     #
-  #     {% for n in data %}
-  #     <div>{{n}}</div>
-  #     {% endfor %}
-  #
+
   context = dict(data = names)
 
 
@@ -173,27 +148,27 @@ def search_player():
   selectAttriList = []
   if request.form.has_key('cbpname'):
     selectClauseList.append('player2.pname')
-    selectAttriList('pname')
+    selectAttriList.append('pname')
     # if not 'player2' in secFromList:
     #   secFromList.append('player2')
   
   if request.form.has_key('cbpnationality'):
     selectClauseList.append('player2.pnationality')
-    selectAttriList('pnationality')
+    selectAttriList.append('pnationality')
 
     # if not 'player2' in secFromList:
     #   secFromList.append('player2')
 
   if request.form.has_key('cbpage'):
     selectClauseList.append('player2.pdob')
-    selectAttriList('data of birth')
+    selectAttriList.append('data of birth')
 
     # if not 'player2' in secFromList:
     #   secFromList.append('player2')
   
   if request.form.has_key('cbpposition'):
     selectClauseList.append('player2.pposition')
-    selectAttriList('position')
+    selectAttriList.append('position')
 
     # if not 'player2' in secFromList:
     #   secFromList.append('player2')
@@ -202,7 +177,7 @@ def search_player():
     #selectClauseList.append('club2.clname')
     selectClauseList.append('(select club2.clname from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
       playsin2.clid = club2.clid) AS clname' )
-    selectAttriList('club name')
+    selectAttriList.append('club name')
 
     # if not 'club2' in secFromList:
     #   secFromList.append('club2')
@@ -214,7 +189,7 @@ def search_player():
     #selectClauseList.append('club2.clowner')
     selectClauseList.append('(select club2.clowner from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
       playsin2.clid = club2.clid) AS clowner' )
-    selectAttriList('club owner')
+    selectAttriList.append('club owner')
 
     #secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
 
@@ -222,7 +197,7 @@ def search_player():
     #selectClauseList.append('club2.clzone')
     selectClauseList.append('(select club2.clzone from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
       playsin2.clid = club2.clid) AS clzone' )
-    selectAttriList('club zone')
+    selectAttriList.append('club zone')
 
     #secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
 
@@ -230,7 +205,7 @@ def search_player():
     #selectClauseList.append('count(performedin2.mid)')
     selectClauseList.append('(select count(distinct(mid)) from performedin performedin2 where performedin2.pid = player2.pid) AS matchNum')
     #secWhereClauseList.append('performedin2.pid = player2.pid')
-    selectAttriList('participated match times')
+    selectAttriList.append('participated match times')
 
   # if request.form.has_key('cbconame'):
   #   #selectClauseList.append('coach2.coname')
@@ -242,19 +217,19 @@ def search_player():
     #selectClauseList.append('count(foul2.fid)')
     selectClauseList.append('(select count(distinct(foul2.fid)) from foul foul2 where foul2.pid = player2.pid) AS foulnum')
     #secWhereClauseList.append('foul2.pid = player2.pid')
-    selectAttriList('foul times')
+    selectAttriList.append('foul times')
 
   if request.form.has_key('cbstartnum'):
     #selectClauseList.append('count(startsin2.pid)')
     selectClauseList.append('(select count(distinct(startsin2.mid)) from startsin startsin2 where startsin2.pid = player2.pid ) AS partInNum')
     #secWhereClauseList.append('startsin2.pid = player2.pid')
-    selectAttriList('starts in times')
+    selectAttriList.append('starts in times')
 
   if request.form.has_key('cbsalary'):
     #selectClauseList.append('playsin2.salary')
     selectClauseList.append('(select playsin2.salary from playsin playsin2 where playsin2.pid = player2.pid) AS salary')
     #secWhereClauseList.append('playsin2.pid = player2.pid')
-    selectAttriList('salary')
+    selectAttriList.append('salary')
 
 
   if len(selectClauseList) == 0:
@@ -278,30 +253,25 @@ def search_player():
   print totalClause
 
 
-
-  
-
-
-
-
-  # print 'fetched name = ' 
-  # print fetchedName
-  # tmpQuery = 'INSERT INTO test(name) VALUES (\'%s\')' % fetchedName
-  # print tmpQuery
   cursor = g.conn.execute(totalClause)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-
-  context = dict(klen = len(selectAttriList), keys = selectAttriList, data = names)
+  #print len(selectAttriList)
+  #print selectAttriList
+  context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names)
   #print context
   return render_template("search_result.html", **context)
   #return render_template("search_result.html")
 
 
   #return redirect('/')
+
+
+# @app.route('search_club', methods=['POST'])
+# def search_club():
 
 
 
