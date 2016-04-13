@@ -46,10 +46,26 @@ p{font-size: 20pt;
 <p>Search Results: </p>
 <br>
 <div>
-	{%for n in data%}
-    <div>{{n}}</div>
-    {%endfor%}
-    ahahahahaha
+
+<table width="80%" border = "1">
+<tr>
+  {%for i in range(klen)%}
+    <td>{{keys[i]}}</td>
+  {%endfor%}
+</tr>
+
+  {%for i in range(recordnum)%}
+  <div>
+    <tr>
+      {%for j in range(klen)%}
+      <td>{{data[i][j]}}</td>
+      {%endfor%}
+    </tr>
+  </div>
+  {%endfor%}
+</table>
+
+
 </div>
 <br>
 <hr>

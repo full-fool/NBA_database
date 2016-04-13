@@ -58,27 +58,30 @@ def teardown_request(exception):
 
 @app.route('/')
 def index():
+  return render_template('index.html')
+
+  # # DEBUG: this is debugging code to see what request looks like
+  # print request.args
+
+  # cursor = g.conn.execute("SELECT name FROM test")
+  # names = []
+  # for result in cursor:
+  #   names.append(result['name'])  # can also be accessed using result[0]
+  # cursor.close()
 
 
-  # DEBUG: this is debugging code to see what request looks like
-  print request.args
-
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()
+  # context = dict(data = names)
 
 
-  context = dict(data = names)
+  # #
+  # # render_template looks in the templates/ folder for files.
+  # # for example, the below file reads template/index.html
+  # #
+  # return render_template("index.html", **context)
 
-
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("index.html", **context)
-
+@app.route('/index.html')
+def gotoindex():
+  return render_template('index.html')
 
 @app.route('/another')
 def another():
@@ -259,9 +262,11 @@ def search_player():
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  #print len(selectAttriList)
-  #print selectAttriList
-  context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names)
+  print len(selectAttriList)
+  print selectAttriList
+
+  context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names, recordnum=len(names))
+  #context = dict(data = names)
   #print context
   return render_template("search_result.html", **context)
   #return render_template("search_result.html")
