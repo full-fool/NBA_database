@@ -1,0 +1,515 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <link href="jQueryAssets/jquery.ui.core.min.css" rel="stylesheet" type="text/css">
+  <link href="jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+  <link href="jQueryAssets/jquery.ui.tabs.min.css" rel="stylesheet" type="text/css">
+  <link href="jQueryAssets/jquery.ui.button.min.css" rel="stylesheet" type="text/css">
+  <link href="jQueryAssets/jquery.ui.datepicker.min.css" rel="stylesheet" type="text/css">
+<script src="jQueryAssets/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="jQueryAssets/jquery-ui-1.9.2.tabs.custom.min.js" type="text/javascript"></script>
+<script src="jQueryAssets/jquery-ui-1.9.2.button.custom.min.js" type="text/javascript"></script>
+<script src="jQueryAssets/jquery-ui-1.9.2.datepicker.custom.min.js" type="text/javascript"></script>
+
+<body>
+  <h1>NBA Database</h1>
+  <div>
+  We've got everything you want.
+  <br>
+  You are just two steps away from what you are looking for!
+  <br></br>
+  </div>
+
+
+
+
+
+<div id="Tabs1">
+  <ul>
+    <li><a href="#tabs-1">Player</a></li>
+    <li><a href="#tabs-2">Match</a></li>
+    <li><a href="#tabs-3">Clubs</a></li>
+    <li><a href="#tabs-4">Performance</a></li>
+  </ul>
+  <div id="tabs-1">
+  <form method="POST" action="search_player">
+   	<div>
+		<li> Step 1: Filter what you want to search for:
+        	<div>
+            <ul>
+            <table width="100%" border="0">
+  <tr>
+    <td>Player Name: <input type="text" name="pname"></td>
+    <td>Nathionality: <select name="pnationality"><option> </option> <option value="USA">USA</option> <option value="China">China</option> <option value="UK">UK</option> <option value="Vietnam">Vietnam</option>
+</select></td>
+    <td>Age: <input type="text" name="page"></td>
+  </tr>
+  <tr>
+    <td>Position: <select name="pposition"><option> </option> <option value="PG"> PG </option> <option value="SG"> SG </option> <option value="SF"> SF </option> <option value="PF"> PF </option><option value="C"> C </option></select>
+              </td>
+    <td>Club: <select name="clname"><option> </option><option value="Los Angeles Lakers">Los Angeles Lakers</option><option value="Golden State Warriors">Golden State Warriors</option><option value="Houston Rockets">Houston Rockets</option><option value="Dallas Mavericks">Dallas Mavericks</option><option value="Orlando Magic">Orlando Magic</option><option value="Toronto Raptors">Toronto Raptors</option><option value="Philadelphia 76er">Philadelphia 76er</option><option value="Boston Celtics">Boston Celtics</option><option value="New York Knicks">New York Knicks</option><option value="Brooklyn Nets">Brooklyn Nets</option><option value="Chicago Bulls">Chicago Bulls</option><option value="Detroit Pistons">Detroit Pistons</option><option value="Cleveland Cavaliers">Cleveland Cavaliers</option><option value="Milwaukee Bucks">Milwaukee Bucks</option><option value="Indiana Pacers">Indiana Pacers</option><option value="Atlanta Hawks">Atlanta Hawks</option><option value="Washington Wizards">Washington Wizards</option><option value="Charlotte Hornets">Charlotte Hornets</option><option value="Miami Heat">Miami Heat</option><option value="Utah Jazz">Utah Jazz</option><option value="Denver Nuggets">Denver Nuggets</option><option value="Portland Trail Blazers">Portland Trail Blazers</option><option value="Minnesota Timberwolves">Minnesota Timberwolves</option><option value="Oklahoma City Thunder">Oklahoma City Thunder</option><option value="Los Angeles Clippers">Los Angeles Clippers</option><option value="Phoenix Suns">Phoenix Suns</option><option value="Sacramento Kings">Sacramento Kings</option><option value="San Antonio Spurs">San Antonio Spurs</option><option value="Memphis Grizzlies">Memphis Grizzlies</option><option value="New Orleans/OklaCity Pelicans">New Orleans/OklaCity Pelicans</option></select></td>
+    <td>Played match times: <input type="text" name="matchnum"></td>
+  </tr>
+  <tr>
+    <td>Foul times: <input type="text" name="foulnum"></td>
+    <td>Start times: <input type="text" name="startnum"></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>    
+</ul>       
+         
+       	  </div>
+       </li>  
+       <br></br>
+       <hr>
+       
+		<li> Step 2: Filter what you want in the result:
+        	<div>
+            	<ul>
+                  <div id="Checkboxes1">
+                  <table width="100%" border="0">
+  <tr>
+    <td><input type="checkbox" name="cbpname" id="Player name">
+                    <label for="Player name">Player name</label></td>
+    <td><input type="checkbox" name="cbpnationality" id="cbpnation">
+                    <label for="cbpnation">Player nationality</label></td>
+    <td><input type="checkbox" name="cbpage" id="cbpag">
+                    <label for="cbpag">Player age</label></td>
+    <td><input type="checkbox" name="cbpposition" id="cbppos">
+                    <label for="cbppos">Player Position</label></td>
+    <td><input type="checkbox" name="cbsalary" id="cbslry">
+                    <label for="cbslry">Player salary</label></td>
+  </tr>
+  <tr>
+    <td><input type="checkbox" name="cbclname" id="cbclnme">
+                    <label for="cbclnme">Player's club name</label></td>
+    <td><input type="checkbox" name="cbclowner" id="cbclownr">
+                    <label for="cbclownr">Player's club owner</label></td>
+    <td><input type="checkbox" name="cbclzone" id="cbclzon">
+                    <label for="cbclzon">Player's club zone</label></td>
+    <td><input type="checkbox" name="cbclcoach" id="cbclcch">
+                    <label for="cbclcch">Player's club coach</label></td>
+    <td><input type="checkbox" name="cbmatchnum" id="cbmchnum">
+                    <label for="cbmchnum">Player match times</label></td>
+  </tr>
+  <tr>
+    <td><input type="checkbox" name="cbfoulnum" id="cbflnum">
+                    <label for="cbflnum">Player foul times</label></td>
+    <td><input type="checkbox" name="cbstartnum" id="cbstrtnum">
+                    <label for="cbstrtnum">Player start times</label></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+                    
+                    
+                    
+                    
+                    
+                  </div>
+              </ul>
+            </div>
+        </li> 
+        
+        <br></br>
+        <hr>
+      <button id="Button1" type="submit">Get the result</button>
+    </div>
+	</form>
+  </div>
+  
+  
+  
+  
+  
+  <!------------------------------------------------------>
+  <div id="tabs-2">
+  <form method="POST" action="search_match">
+    
+   	<div>
+		<li> Step 1: Filter what you want to search for:
+        	<div>
+            <ul>
+        		<table width="100%" border="0">
+  <tr>
+    <td>Winner: <select name="mwinner"><option> </option><option value="Los Angeles Lakers">Los Angeles Lakers</option><option value="Golden State Warriors">Golden State Warriors</option><option value="Houston Rockets">Houston Rockets</option><option value="Dallas Mavericks">Dallas Mavericks</option><option value="Orlando Magic">Orlando Magic</option><option value="Toronto Raptors">Toronto Raptors</option><option value="Philadelphia 76er">Philadelphia 76er</option><option value="Boston Celtics">Boston Celtics</option><option value="New York Knicks">New York Knicks</option><option value="Brooklyn Nets">Brooklyn Nets</option><option value="Chicago Bulls">Chicago Bulls</option><option value="Detroit Pistons">Detroit Pistons</option><option value="Cleveland Cavaliers">Cleveland Cavaliers</option><option value="Milwaukee Bucks">Milwaukee Bucks</option><option value="Indiana Pacers">Indiana Pacers</option><option value="Atlanta Hawks">Atlanta Hawks</option><option value="Washington Wizards">Washington Wizards</option><option value="Charlotte Hornets">Charlotte Hornets</option><option value="Miami Heat">Miami Heat</option><option value="Utah Jazz">Utah Jazz</option><option value="Denver Nuggets">Denver Nuggets</option><option value="Portland Trail Blazers">Portland Trail Blazers</option><option value="Minnesota Timberwolves">Minnesota Timberwolves</option><option value="Oklahoma City Thunder">Oklahoma City Thunder</option><option value="Los Angeles Clippers">Los Angeles Clippers</option><option value="Phoenix Suns">Phoenix Suns</option><option value="Sacramento Kings">Sacramento Kings</option><option value="San Antonio Spurs">San Antonio Spurs</option><option value="Memphis Grizzlies">Memphis Grizzlies</option><option value="New Orleans/OklaCity Pelicans">New Orleans/OklaCity Pelicans</option></select></td>
+    <td>Match time: 
+      <input type="text" id="Datepicker1" name="mtime"></td>
+    <td>Match type: <select name="mtype"> <option> </option><option value="regular">regular</option><option value="playoff">playoff</option></select></td>
+  </tr>
+  <tr>
+    <td>Competetion year: <input type="text" name="cpyear"></td>
+    <td>Home club: <select name="ptypehome"><option> </option><option value="Los Angeles Lakers">Los Angeles Lakers</option><option value="Golden State Warriors">Golden State Warriors</option><option value="Houston Rockets">Houston Rockets</option><option value="Dallas Mavericks">Dallas Mavericks</option><option value="Orlando Magic">Orlando Magic</option><option value="Toronto Raptors">Toronto Raptors</option><option value="Philadelphia 76er">Philadelphia 76er</option><option value="Boston Celtics">Boston Celtics</option><option value="New York Knicks">New York Knicks</option><option value="Brooklyn Nets">Brooklyn Nets</option><option value="Chicago Bulls">Chicago Bulls</option><option value="Detroit Pistons">Detroit Pistons</option><option value="Cleveland Cavaliers">Cleveland Cavaliers</option><option value="Milwaukee Bucks">Milwaukee Bucks</option><option value="Indiana Pacers">Indiana Pacers</option><option value="Atlanta Hawks">Atlanta Hawks</option><option value="Washington Wizards">Washington Wizards</option><option value="Charlotte Hornets">Charlotte Hornets</option><option value="Miami Heat">Miami Heat</option><option value="Utah Jazz">Utah Jazz</option><option value="Denver Nuggets">Denver Nuggets</option><option value="Portland Trail Blazers">Portland Trail Blazers</option><option value="Minnesota Timberwolves">Minnesota Timberwolves</option><option value="Oklahoma City Thunder">Oklahoma City Thunder</option><option value="Los Angeles Clippers">Los Angeles Clippers</option><option value="Phoenix Suns">Phoenix Suns</option><option value="Sacramento Kings">Sacramento Kings</option><option value="San Antonio Spurs">San Antonio Spurs</option><option value="Memphis Grizzlies">Memphis Grizzlies</option><option value="New Orleans/OklaCity Pelicans">New Orleans/OklaCity Pelicans</option></select></td>
+    <td>Away club: <select name="ptypeaway"><option> </option><option value="Los Angeles Lakers">Los Angeles Lakers</option><option value="Golden State Warriors">Golden State Warriors</option><option value="Houston Rockets">Houston Rockets</option><option value="Dallas Mavericks">Dallas Mavericks</option><option value="Orlando Magic">Orlando Magic</option><option value="Toronto Raptors">Toronto Raptors</option><option value="Philadelphia 76er">Philadelphia 76er</option><option value="Boston Celtics">Boston Celtics</option><option value="New York Knicks">New York Knicks</option><option value="Brooklyn Nets">Brooklyn Nets</option><option value="Chicago Bulls">Chicago Bulls</option><option value="Detroit Pistons">Detroit Pistons</option><option value="Cleveland Cavaliers">Cleveland Cavaliers</option><option value="Milwaukee Bucks">Milwaukee Bucks</option><option value="Indiana Pacers">Indiana Pacers</option><option value="Atlanta Hawks">Atlanta Hawks</option><option value="Washington Wizards">Washington Wizards</option><option value="Charlotte Hornets">Charlotte Hornets</option><option value="Miami Heat">Miami Heat</option><option value="Utah Jazz">Utah Jazz</option><option value="Denver Nuggets">Denver Nuggets</option><option value="Portland Trail Blazers">Portland Trail Blazers</option><option value="Minnesota Timberwolves">Minnesota Timberwolves</option><option value="Oklahoma City Thunder">Oklahoma City Thunder</option><option value="Los Angeles Clippers">Los Angeles Clippers</option><option value="Phoenix Suns">Phoenix Suns</option><option value="Sacramento Kings">Sacramento Kings</option><option value="San Antonio Spurs">San Antonio Spurs</option><option value="Memphis Grizzlies">Memphis Grizzlies</option><option value="New Orleans/OklaCity Pelicans">New Orleans/OklaCity Pelicans</option></select></td>
+  </tr>
+  <tr>
+    <td>Score difference: <input type="text" name="scoredifference"></td>
+    <td>Referee name: <select name="rname"><option> </option><option value="Derrick Collins">Derrick Collins</option>
+<option value="Greg Willard">Greg Willard</option>
+<option value="Bennett Salvatore">Bennett Salvatore</option>
+<option value="Dan Crawford">Dan Crawford</option>
+<option value="David Guthrie">David Guthrie</option>
+<option value="Ed Malloy">Ed Malloy</option>
+<option value="Eli Roe">Eli Roe</option>
+<option value="Gary Zielinski">Gary Zielinski</option>
+<option value="Joe DeRosa">Joe DeRosa</option>
+<option value="Luis Grillo">Luis Grillo</option>
+<option value="Nick Buchert">Nick Buchert</option>
+<option value="Sean Wright">Sean Wright</option>
+<option value="Kane Fitzgerald">Kane Fitzgerald</option>
+<option value="Tony Brown">Tony Brown</option>
+<option value="Lauren Holtkamp">Lauren Holtkamp</option>
+<option value="Marc Davis">Marc Davis</option>
+<option value="Derrick Stafford">Derrick Stafford</option>
+<option value="Ron Garretson">Ron Garretson</option>
+<option value="Violet Palmer">Violet Palmer</option>
+<option value="Monty McCutchen">Monty McCutchen</option>
+<option value="Zach Zarba">Zach Zarba</option>
+<option value="Joe Crawford">Joe Crawford</option>
+<option value="Matt Boland">Matt Boland</option>
+<option value="James Capers">James Capers</option>
+<option value="Leroy Richardson">Leroy Richardson</option>
+<option value="Dedric Taylor">Dedric Taylor</option>
+<option value="Bill Spooner">Bill Spooner</option>
+<option value="Jason Phillips">Jason Phillips</option>
+<option value="Mike Callahan">Mike Callahan</option>
+<option value="Tony Brothers">Tony Brothers</option>
+<option value="Pat Fraher">Pat Fraher</option>
+<option value="Mitchell Ervin">Mitchell Ervin</option>
+<option value="Kevin Scott">Kevin Scott</option>
+<option value="Mark Lindsay">Mark Lindsay</option>
+<option value="John Goble">John Goble</option>
+<option value="Scott Wall">Scott Wall</option>
+<option value="Marat Kogut">Marat Kogut</option>
+<option value="Sean Corbin">Sean Corbin</option>
+<option value="Kevin Cutler">Kevin Cutler</option>
+<option value="Steve Anderson">Steve Anderson</option>
+<option value="David Jones">David Jones</option>
+<option value="Eric Dalen">Eric Dalen</option>
+<option value="Michael Smith">Michael Smith</option>
+<option value="Tyler Ford">Tyler Ford</option>
+<option value="Leon Wood">Leon Wood</option>
+<option value="Ken Mauer">Ken Mauer</option>
+<option value="Eric Lewis">Eric Lewis</option>
+<option value="Brian Forte">Brian Forte</option>
+<option value="Ben Taylor">Ben Taylor</option>
+<option value="Bennie Adams">Bennie Adams</option>
+<option value="Scott Foster">Scott Foster</option>
+<option value="Tom Washington">Tom Washington</option>
+<option value="Gediminas Petraitis">Gediminas Petraitis</option>
+<option value="Scott Twardoski">Scott Twardoski</option>
+<option value="Bill Kennedy">Bill Kennedy</option>
+<option value="Mark Ayotte">Mark Ayotte</option>
+<option value="Josh Tiven">Josh Tiven</option>
+<option value="James Williams">James Williams</option>
+<option value="Courtney Kirkland">Courtney Kirkland</option>
+<option value="Derek Richardson">Derek Richardson</option>
+<option value="Justin VanDuyne">Justin VanDuyne</option>
+<option value="Haywoode Workman">Haywoode Workman</option>
+<option value="Brent Barnaky">Brent Barnaky</option>
+<option value="Rodney Mott">Rodney Mott</option>
+<option value="J.T. Orr">J.T. Orr</option>
+<option value="Tre Maddox">Tre Maddox</option>
+<option value="Curtis Blair">Curtis Blair</option>
+<option value="Karl Lane">Karl Lane</option>
+<option value="Ray Acosta">Ray Acosta</option>
+<option value="JB DeRosa">JB DeRosa</option>
+<option value="Jason Goldenberg">Jason Goldenberg</option>
+<option value="Brett Nansel">Brett Nansel</option>
+<option value="CJ Washington">CJ Washington</option></select></td>
+    <td>Participating player: <input type="text" name="ppname"></td>
+  </tr>
+</table>
+</ul>
+       	  </div>
+        </li>  
+        <br></br>
+        <hr>
+		<li> Step 2: Filter what you want in the result:
+        
+       	  <div>
+            <ul>
+            <div id="Checkboxes2">
+            	<table width="100%" border="0">
+  <tr>
+  
+    <td>
+      <input type="checkbox" name="cbmwinner" id="cbmwnr">
+                    <label for="cbmwnr">Match winner</label></td>
+    <td><input type="checkbox" name="cbmtime" id="cbmtim">
+                    <label for="cbmtim">Match time</label></td>
+    <td><input type="checkbox" name="cbmtype" id="cbmtyp">
+                    <label for="cbmtyp">Match type</label></td>
+    <td><input type="checkbox" name="cbcpyear" id="cbcpyr">
+                    <label for="cbcpyr">Competition year</label></td>
+    <td><input type="checkbox" name="cbptypehome" id="cbpthom">
+                    <label for="cbpthom">Home club</label></td>
+  </tr>
+  <tr>
+    <td><input type="checkbox" name="cbptypeaway" id="cbptawy">
+                    <label for="cbptawy">Away club</label></td>
+    <td><input type="checkbox" name="cbscoredifference" id="cbscrdiff">
+                    <label for="cbscrdiff">Score difference</label></td>
+    <td><input type="checkbox" name="cbrname" id="cbrnam">
+                    <label for="cbrnam">Referee name</label></td>
+    <td><input type="checkbox" name="cbrage" id="cbrag">
+                    <label for="cbrag">Referee age</label></td>
+    <td><input type="checkbox" name="cbrnationality" id="cbrnation">
+                    <label for="cbrnation">Referee nationality</label></td>
+  </tr>
+  <tr>
+    <td><input type="checkbox" name="cbfoulnum" id="cbmflnum">
+                    <label for="cbmflnum">Foul times</label></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+    </div>
+    </ul>
+            </div>
+        </li> 
+        <br></br>
+        <hr>
+        <button id="Button2" type="submit">Get the result</button>
+    </div>
+	</form>
+  </div>
+  
+  
+  <!----------------------------------------------------->
+  <div id="tabs-3">
+  <form method="POST" action="search_club">
+   	<div>
+		<li> Step 1: Filter what you want to search for:
+        	<div>
+        		<ul>
+               <table width="100%" border="0">
+  <tr>
+  	<td>Club name: <select name="clname"><option> </option><option value="Los Angeles Lakers">Los Angeles Lakers</option><option value="Golden State Warriors">Golden State Warriors</option><option value="Houston Rockets">Houston Rockets</option><option value="Dallas Mavericks">Dallas Mavericks</option><option value="Orlando Magic">Orlando Magic</option><option value="Toronto Raptors">Toronto Raptors</option><option value="Philadelphia 76er">Philadelphia 76er</option><option value="Boston Celtics">Boston Celtics</option><option value="New York Knicks">New York Knicks</option><option value="Brooklyn Nets">Brooklyn Nets</option><option value="Chicago Bulls">Chicago Bulls</option><option value="Detroit Pistons">Detroit Pistons</option><option value="Cleveland Cavaliers">Cleveland Cavaliers</option><option value="Milwaukee Bucks">Milwaukee Bucks</option><option value="Indiana Pacers">Indiana Pacers</option><option value="Atlanta Hawks">Atlanta Hawks</option><option value="Washington Wizards">Washington Wizards</option><option value="Charlotte Hornets">Charlotte Hornets</option><option value="Miami Heat">Miami Heat</option><option value="Utah Jazz">Utah Jazz</option><option value="Denver Nuggets">Denver Nuggets</option><option value="Portland Trail Blazers">Portland Trail Blazers</option><option value="Minnesota Timberwolves">Minnesota Timberwolves</option><option value="Oklahoma City Thunder">Oklahoma City Thunder</option><option value="Los Angeles Clippers">Los Angeles Clippers</option><option value="Phoenix Suns">Phoenix Suns</option><option value="Sacramento Kings">Sacramento Kings</option><option value="San Antonio Spurs">San Antonio Spurs</option><option value="Memphis Grizzlies">Memphis Grizzlies</option><option value="New Orleans/OklaCity Pelicans">New Orleans/OklaCity Pelicans</option></select></td>
+    <td>Club coach: <select name="coname"><option> </option><option value="Rick Carlisle">Rick Carlisle</option>
+<option value="Byron Scott">Byron Scott</option>
+<option value="Steve Kerr">Steve Kerr</option>
+<option value="J.B-Bigstuff">J.B-Bigstuff</option>
+<option value="Jacque Vaughn">Jacque Vaughn</option>
+<option value="Dwane Casey">Dwane Casey</option>
+<option value="Brett brown">Brett brown</option>
+<option value="Brad Stevens">Brad Stevens</option>
+<option value="Derek Fisher">Derek Fisher</option>
+<option value="Lionel Hollins">Lionel Hollins</option>
+<option value="Tom Thibodeau">Tom Thibodeau</option>
+<option value="Maurice Cheeks">Maurice Cheeks</option>
+<option value="David Blatt">David Blatt</option>
+<option value="Jason Kidd">Jason Kidd</option>
+<option value="Frank Vogel">Frank Vogel</option>
+<option value="Mike Budenholzer">Mike Budenholzer</option>
+<option value="Randy Wittman">Randy Wittman</option>
+<option value="Steve Clifford">Steve Clifford</option>
+<option value="Erik Spoelstra">Erik Spoelstra</option>
+<option value="Tyrone Corbin">Tyrone Corbin</option>
+<option value="Brian Shaw">Brian Shaw</option>
+<option value="Terry Stotts">Terry Stotts</option>
+<option value="Flip Saunders">Flip Saunders</option>
+<option value="Scott Brooks">Scott Brooks</option>
+<option value="Doc Rivers">Doc Rivers</option>
+<option value="Jeff Hornacek">Jeff Hornacek</option>
+<option value="Mike Malone">Mike Malone</option>
+<option value="Gregg Popovich">Gregg Popovich</option>
+<option value="Dave-Yeager">Dave-Yeager</option>
+<option value="Monty Williams">Monty Williams</option></select></td>
+    <td>Club owner: <select name="clowner"><option> </option><option value="Jeanie Buss">Jeanie Buss</option>
+<option value="Peter Guber">Peter Guber</option>
+<option value="Leslie Alexander">Leslie Alexander</option>
+<option value="Mark Cuban">Mark Cuban</option>
+<option value="Richard DeVos">Richard DeVos</option>
+<option value="Larry Tanenbaum">Larry Tanenbaum</option>
+<option value="Joshua Harris">Joshua Harris</option>
+<option value="Steve Pagliuca">Steve Pagliuca</option>
+<option value="James Dolan">James Dolan</option>
+<option value="Mikhail Prokhorov">Mikhail Prokhorov</option>
+<option value="Wesley Edens">Wesley Edens</option>
+<option value="Tom Gores">Tom Gores</option>
+<option value="Gordon Gund">Gordon Gund</option>
+<option value="Wesley Edens">Wesley Edens</option>
+<option value="Herbert Simon">Herbert Simon</option>
+<option value="Tony Ressler">Tony Ressler</option>
+<option value="Ted Leonsis">Ted Leonsis</option>
+<option value="Michael Jordan">Michael Jordan</option>
+<option value="Micky Arison">Micky Arison</option>
+<option value="Gail Miller">Gail Miller</option>
+<option value="Stan Kroenke">Stan Kroenke</option>
+<option value="Paul Allen">Paul Allen</option>
+<option value="Glen Taylor">Glen Taylor</option>
+<option value="Clayton Bennett">Clayton Bennett</option>
+<option value="Steve Ballmer">Steve Ballmer</option>
+<option value="Robert Sarver">Robert Sarver</option>
+<option value="Vivek Ranadive">Vivek Ranadive</option>
+<option value="Peter Holt">Peter Holt</option>
+<option value="Robert J. Pera">Robert J. Pera</option>
+<option value="Tom Benson">Tom Benson</option></select></td>
+    
+  </tr>
+  <tr>
+  <td>Club zone: <select name="clzone"><option> </option><option value="east">East</option><option value="west">West</option></select></td>
+    <td>Win times in match: <input type="text" name="clwinnum"></td>
+    <td>Lose times in match: <input type="text" name="cllosenum"></td>
+    
+  </tr>
+  <tr>
+  <td>Competition year: <input type="text" name="cpyear"></td>
+    <td>Champion times: <input type="text" name="clchampionnum"></td>
+    
+    <td>Member player: <input type="text" name="pname"> </td>
+  </tr>
+  <tr>
+    <td>Total score: <input type="text" name="totalscore"></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+              </ul>
+        	</div>
+        </li>  
+        <br></br>
+        <hr>
+		<li> Step 2: Filter what you want in the result:
+        	<div>
+            	<ul>
+                <div id="Checkboxes3">
+<table width="100%" border="0">
+  <tr>
+    <td><input type="checkbox" name="cbclname" id="cbcnam">
+                    <label for="cbcnam">Club name</label></td>
+    <td><input type="checkbox" name="cbconame" id="cbconam">
+                    <label for="cbconam">Coach name</label></td>
+    <td><input type="checkbox" name="cbcoage" id="cbcoag">
+                    <label for="cbcoag">Club coach age</label></td>
+    <td><input type="checkbox" name="cbconationality" id="cbconation">
+                    <label for="cbconation">Club coach nationality</label></td>
+    <td><input type="checkbox" name="cbclowner" id="cbcownr">
+                    <label for="cbcownr">Club owner</label></td>
+    </tr>
+  <tr>
+    <td><input type="checkbox" name="cbclzone" id="cbczon">
+                    <label for="cbczon">Club zone</label></td>
+    <td><input type="checkbox" name="cbclwinnum" id="cbwinn">
+                    <label for="cbwinn">Win times</label></td>
+    <td><input type="checkbox" name="cbcllosenum" id="cblosen">
+                    <label for="cblosen">Lose times</label></td>
+    <td><input type="checkbox" name="cbclchampionnum" id="cbclchampn">
+                    <label for="cbclchampn">Champion times</label></td>
+    <td><input type="checkbox" name="cbclpname" id="cbclpnam">
+                    <label for="cbclpnam">Club players</label></td>
+    </tr>
+</table>
+
+                </div>
+               </ul>
+            </div>
+        </li> 
+        <br></br>
+        <hr>
+        <button id="Button3" type="submit">Get the result</button>
+    </div>
+	</form>
+  </div>
+  
+  
+  
+  
+  <div id="tabs-4">
+  <form method="POST" action="search_performance">
+   	<div>
+		<li> Step 1: Filter what you want to search for:
+        	<div>
+        		
+        	</div>
+        </li>  
+        <br></br>
+        <hr>
+		<li> Step 2: Filter what you want in the result:
+        	<div>
+            	
+            </div>
+        </li> 
+        <br></br>
+        <hr>
+        <button id="Button4" type="submit">Get the result</button>
+    </div>
+	</form>
+  </div>
+  
+</div>
+
+
+
+
+<script type="text/javascript">
+$(function() {
+	$( "#Tabs1" ).tabs(); 
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!--hahahah-->
+<form method="POST" action="/add">
+<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
+</form>
+
+
+<p><a href="another.html">Go to the other page</a></p>
+  <div>{{data}}</div>
+
+<div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+<script type="text/javascript">
+$(function() {
+	$( "#Button1" ).button(); 
+});
+$(function() {
+	$( "#Button5" ).button(); 
+});
+$(function() {
+	$( "#Button2" ).button(); 
+});
+$(function() {
+	$( "#Button3" ).button(); 
+});
+$(function() {
+	$( "#Button4" ).button(); 
+});
+$(function() {
+	$( "#Checkboxes1" ).buttonset(); 
+});
+$(function() {
+	$( "#Datepicker1" ).datepicker(); 
+});
+$(function() {
+	$( "#Checkboxes2" ).buttonset(); 
+});
+$(function() {
+	$( "#Checkboxes3" ).buttonset(); 
+});
+</script>
+</body>
+
+
+</html>
