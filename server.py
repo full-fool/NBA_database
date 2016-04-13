@@ -632,6 +632,101 @@ def search_performance():
   context = dict(klen=9 , keys = attriList, data = names, recordnum=len(names))
   return render_template("search_result.html", **context)
 
+@app.route('/special_request_1.html')
+def specialRequest1():
+  query = 'select player.pname, performedIn.totalScores, club.clname, playsIn.salary \
+    from player, performedIn, club, playsIn \
+    where performedIn.totalScores = (select max(PI.totalScores) from performedIn PI) AND performedIn.pid = player.pid \
+    AND player.pid = performedIn.pid AND playsIn.pid = player.pid AND playsIn.clid = club.clid; '
+  cursor = g.conn.execute(query)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  selectAttriList = ['player name', 'total scores', 'club name', 'salary']
+  context = dict(klen=4, keys = selectAttriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
+
+
+
+@app.route('/special_request_2.html')
+def specialRequest2():
+  # query = 'SELECT C1.clname, C2.clname, M.mtime\
+  #   FROM participatedInM PM1 join club C1 on PM1.clid = C1.clid, participatedInM PM2 JOIN club C2 on PM2.clid = C2.clid, \
+  #   match M \
+  #   where PM1.ptype = \'home\' AND PM2.ptype = \'away\' \
+  #   AND PM2.iswinner = TRUE AND PM1.totalScores >= 95 AND PM2.totalScores >= 95 AND M.mid = PM1.mid \
+  #   AND M.mid = PM2.mid AND PM2.totalScores - PM1.totalScores <= 5;'
+  query = 'SELECT C1.clname, C2.clname, M.mtime \
+    FROM participatedInM PM1 join club C1 on PM1.clid = C1.clid, participatedInM PM2 JOIN club C2 on PM2.clid = C2.clid, \
+    match M \
+    where PM1.ptype = \'home\' AND PM2.ptype = \'away\' \
+    AND PM2.iswinner = TRUE AND PM1.totalScores >= 95 AND PM2.totalScores >= 95 AND M.mid = PM1.mid\
+    AND M.mid = PM2.mid AND PM2.totalScores - PM1.totalScores <= 5;'
+  
+  cursor = g.conn.execute(query)
+  names = []
+  iterNum = 0
+  for result in cursor:
+    iterNum += 1
+    names.append(result)  # can also be accessed using result[0]
+    if iterNum >= 100:
+      break
+  cursor.close()
+  selectAttriList = ['club1 name', 'club2 name', 'match date']
+  context = dict(klen=3, keys = selectAttriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
+
+@app.route('/special_request_3.html')
+def specialRequest3():
+  query = """
+
+select CL4.clname, PLI2.pid, P4.pname as rising_star, PLI2.salary
+from playsIn PLI2, player P4, club CL4,
+    (SELECT CL.clid
+         FROM club CL
+         WHERE (SELECT count(TMP.mid)
+                FROM (SELECT M.mid FROM match M, participatedInM PM
+                      WHERE PM.clid = CL.clid AND M.mid = PM.mid AND M.mwinner = CL.clname) TMP) >=
+               (select AVG(NW.win_num) as ave_win
+               from (select C1.clname, count(*) AS win_num
+                     from club C1, match M1
+                     where C1.clname = M1.mwinner
+                     group by C1.clname) NW) ) satisfiedClub,
+
+
+      (select  P1.pid
+      from 
+      player P1, playsIn PS1,
+      (select PI2.pid, AVG(PI2.totalScores) as pas
+          from performedIn PI2, player PL2
+          where PI2.pid = PL2.pid
+          group by PI2.pid) PSC1,
+        (select C1.clid, AVG(PSC.pas) as club_ave_score
+        from 
+
+        club C1, playsIn PSI,
+          (select PI.pid, AVG(PI.totalScores) as pas
+          from performedIn PI, player PL
+          where PI.pid = PL.pid
+          group by PI.pid) PSC
+
+        where C1.clid = PSI.clid AND PSI.pid = PSC.pid
+        group by C1.clid)  CAS
+      where P1.pid = PS1.pid AND PS1.clid = CAS.clid AND P1.pid = PSC1.pid AND PSC1.pas > CAS.club_ave_score) satisfiedPlayer
+
+where PLI2.pid = satisfiedPlayer.pid AND PLI2.clid = satisfiedClub.clid AND PLI2.pid = P4.pid AND CL4.clid = PLI2.clid;
+
+  """
+  cursor = g.conn.execute(query)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  selectAttriList = ['club name', 'player id', 'playe name', 'salary']
+  context = dict(klen=4, keys = selectAttriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
+
 
 
 
