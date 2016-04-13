@@ -34,6 +34,7 @@
     <li><a href="#tabs-2">Match</a></li>
     <li><a href="#tabs-3">Clubs</a></li>
     <li><a href="#tabs-4">Performance</a></li>
+    <li><a href="#tabs-5">Interesting Queries</a></li>
   </ul>
   <div id="tabs-1">
   <form method="POST" action="search_player">
@@ -422,27 +423,42 @@
   
   
   
-  
+  <!------------------------------------------------------>
   <div id="tabs-4">
   <form method="POST" action="search_performance">
    	<div>
+            <ul>This part returns you the performance count of your interested players in target matches.</ul>
+        <br>
 		<li> Step 1: Filter what you want to search for:
         	<div>
-        		
+        		<ul>
+                <table width="100%" border="0">
+  <tr>
+    <td>Player name: <input type="text" name="pname"></td>
+    <td>Match time: 
+      <input type="text" id="Datepicker2" name="mtime"></td>
+  </tr>
+</table>
+                </ul>
         	</div>
         </li>  
-        <br></br>
-        <hr>
-		<li> Step 2: Filter what you want in the result:
-        	<div>
-            	
-            </div>
-        </li> 
         <br></br>
         <hr>
         <button id="Button4" type="submit">Get the result</button>
     </div>
 	</form>
+  </div>
+  
+  
+  <!----------------------------------------------------->
+  <div id="tabs-5">
+    <div id="Buttonset1">
+      <button id="specialbutton1">Try me</button>
+      <br>
+      <button id="specialbutton1">Try me, too</button>
+      <br>
+      <button id="specialbutton1">Try me, three</button>
+    </div>
   </div>
   
 </div>
@@ -466,7 +482,7 @@ $(function() {
 
 
 
-<!--hahahah-->
+<!--hahahaha
 <form method="POST" action="/add">
 <p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
 </form>
@@ -480,6 +496,9 @@ $(function() {
     <div>{{n}}</div>
     {% endfor %}
   </div>
+  
+  -->
+  
 <script type="text/javascript">
 $(function() {
 	$( "#Button1" ).button(); 
@@ -507,6 +526,12 @@ $(function() {
 });
 $(function() {
 	$( "#Checkboxes3" ).buttonset(); 
+});
+$(function() {
+	$( "#Datepicker2" ).datepicker(); 
+});
+$(function() {
+	$( "#Buttonset1" ).buttonset(); 
 });
 </script>
 </body>
