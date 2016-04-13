@@ -465,14 +465,28 @@ function checkinput()
   </div>
   
   
-  <!----------------------------------------------------->
   <div id="tabs-5">
     <div id="Buttonset1">
-      <button id="specialbutton1"><a href="special_request_1.html">Try me</button>
       <br>
-      <button id="specialbutton2"><a href="special_request_2.html">Try me, too</button>
-      <br>
-      <button id="specialbutton3"><a href="special_request_3.html">Try me, three</button>
+    <div>
+      <li>Highest score player</li>
+      <p> Select the players who score the highest in each match. Print their names, their score in that match, their club name and their salaries.</p>
+      <button id="specialbutton1" onclick="window.location.href='/special_request_1.html'">Highest score player</button>
+    </div>
+    <br>
+    <hr>
+    <div>
+      <li>Most interesting Game</li>
+      <p> Select all games which both team scores more than 95 and the score difference in less than 5 and the winner is the away team. Print these two teams' names and the match time.</p>
+      <button id="specialbutton2" onclick="window.location.href='/special_request_2.html'">Most interesting Game</button>
+    </div>
+    <br>
+    <hr>
+    <div>
+      <li>Rising Star</li>
+      <p> For each club which has a higher win times count in matches than average win times count of all clubs, select all of the rising stars ( rising stars are defined as the players whose total score is higher or equal than the average total score of players in his club). Print the club names, the rising star ids, the rising star names and their salaries.</p>
+      <button id="specialbutton3" onclick="window.location.href='/special_request_3.html'">Rising Star</button>
+    </div>
     </div>
   </div>
   
