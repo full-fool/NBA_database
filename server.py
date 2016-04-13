@@ -236,13 +236,18 @@ def search_player():
 
 
   if len(selectClauseList) == 0:
-    selectClause = 'select distinct * '
+    context = dict(klen=0,  keys = [], data = [], recordnum=0)
+    return render_template("search_result.html", **context)
+
+
+
+    #selectClause = 'select distinct * '
   else:
     selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
 
   # from clause
   #fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, coachin coachin2'
-  fromClause = 'from player player2'
+  fromClause = ' from player player2'
   #fromClause = 'from player player2, club club2, playsin playsin2, coach'
 
   secWhereClause = ''
@@ -250,7 +255,7 @@ def search_player():
     secWhereClause = 'player2.pid in %s' % firstStepClause + ';'
   else:
     secWhereClause = ' AND '.join(secWhereClauseList) + ' AND player2.pid in %s' % firstStepClause + ';'
-  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  totalClause = selectClause  + fromClause + ' where ' + secWhereClause
   #print secWhereClauseList
   print 'totalClause'
   print totalClause
@@ -259,8 +264,12 @@ def search_player():
   cursor = g.conn.execute(totalClause)
 
   names = []
+  rowNum = 0
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
+    rowNum += 1
+    #if rowNum >= 100:
+    #  break
   cursor.close()
   print len(selectAttriList)
   print selectAttriList
@@ -393,7 +402,10 @@ def search_club():
 
 
   if len(selectClauseList) == 0:
-    selectClause = 'select distinct * '
+    context = dict(klen=0,  keys = [], data = [], recordnum=0)
+    return render_template("search_result.html", **context)
+
+
   else:
     selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
 
@@ -407,7 +419,7 @@ def search_club():
     secWhereClause = 'club2.clid in %s' % firstStepClause + ';'
   else:
     secWhereClause = ' AND '.join(secWhereClauseList) + ' AND club2.clid in %s' % firstStepClause + ';'
-  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  totalClause = selectClause  + fromClause + ' where ' + secWhereClause
   #print secWhereClauseList
   print 'totalClause'
   print totalClause
@@ -416,8 +428,12 @@ def search_club():
   cursor = g.conn.execute(totalClause)
 
   names = []
+  rowNum = 0
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
+    rowNum += 1
+    #if rowNum >= 100:
+    #  break
   cursor.close()
 
   context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names, recordnum=len(names))
@@ -566,13 +582,15 @@ def search_match():
 
 
   if len(selectClauseList) == 0:
-    selectClause = 'select distinct * '
+    context = dict(klen=0,  keys = [], data = [], recordnum=0)
+    return render_template("search_result.html", **context)
+
   else:
     selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
 
   # from clause
   #fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, coachin coachin2'
-  fromClause = 'from match match2'
+  fromClause = ' from match match2'
   #fromClause = 'from player player2, club club2, playsin playsin2, coach'
 
   secWhereClause = ''
@@ -580,7 +598,7 @@ def search_match():
     secWhereClause = 'match2.mid in %s' % firstStepClause + ';'
   else:
     secWhereClause = ' AND '.join(secWhereClauseList) + ' AND match2.mid in %s' % firstStepClause + ';'
-  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  totalClause = selectClause  + fromClause + ' where ' + secWhereClause
   #print secWhereClauseList
   print 'totalClause'
   print totalClause
@@ -589,9 +607,14 @@ def search_match():
   cursor = g.conn.execute(totalClause)
 
   names = []
+  rowNum = 0
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
+    rowNum +=1 
+    #if rowNum >= 100:
+    #  break
   cursor.close()
+  #print 'search match rownum is %s' % rowNum
 
   context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names, recordnum=len(names))
   return render_template("search_result.html", **context)
