@@ -275,8 +275,153 @@ def search_player():
   #return redirect('/')
 
 
-# @app.route('search_club', methods=['POST'])
-# def search_club():
+@app.route('/search_club', methods=['POST'])
+def search_club():
+  whereClause = ''
+  whereClauseList = []
+  firstFromList = ['club']
+  fCowner = request.form['clowner']
+  if fCowner != '':
+    whereClauseList.append('club.clowner = \'%s\'' % fCowner)
+  fCName = request.form['clname']
+  if fCName != '':
+    whereClauseList.append('club.clname = \'%s\'' % fCName)
+
+  fCzone = request.form['clzone']
+  if fCzone != '':
+    whereClauseList.append('club.clzone = \'%s\'' % fCzone)
+
+  fWintimes = request.form['clwinnum']
+  if fWintimes != '':
+    whereClauseList.append('(select count(*) from participatedinm where club.clid = participatedinm.clid AND \
+      participatedinm.iswinner=True) = %s' % fWintimes)
+
+  fLosetimes = request.form['clwinnum']
+  if fLosetimes != '':
+    whereClauseList.append('(select count(*) from participatedinm where participatedinm.clid = club.clid) - \
+      (select count(*) from participatedinm where club.clid = participatedinm.clid \
+      AND participatedinm.iswinner=True) = %s' % fLosetimes )
+
+  fConame = request.form['coname']
+  if fConame != '':
+    whereClauseList.append('club.clid = coachin.clid AND coach.coid = coachin.coid AND coach.coname = \'%s\'' % fConame)
+    firstFromList.append('coach')
+    firstFromList.append('coachin')
+
+  fPname = request.form['pname']
+  if fPname != '':
+    whereClauseList.append('club.clid = playsin.clid AND playsin.pid = player.pid AND player.pname = \'%s\'' % fPname)
+    firstFromList.append('playsin')
+    firstFromList.append('player')
+  # fTotalScore = request.form['fTotalScore']
+  # if fTotalScore != '':
+  #   whereClauseList.append('')
+
+  fChampTime = request.form['clchampionnum']
+  if fChampTime != '':
+    whereClauseList.append('(select count(*) from competition where competition.cpchampion = club.clname) = %s' % fChampTime)
+
+
+  firstStepClause = ''
+  if len(whereClauseList) == 0:
+    firstStepClause = '(select clid from club)'
+  else:
+    firstStepClause = '(select distinct(club.clid) from ' + ' , '.join(firstFromList) + '  where ' + \
+      ' AND '.join(whereClauseList) + ')'
+  #print firstStepClause
+
+
+  # # second step
+  # # select clause
+  
+  selectClause = ''
+  secWhereClauseList = []
+  secFromList = []
+  selectClauseList = []
+  selectAttriList = []
+  if request.form.has_key('cbclname'):
+    selectClauseList.append('club2.clname')
+    selectAttriList.append('club name')
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+  
+  if request.form.has_key('cbconame'):
+    selectClauseList.append('(select coach2.coname from coach coach2, coachin coachin2 where \
+      coach2.coid = coachin2.coid AND coachin2.clid = club2.clid) AS coname' )
+    selectAttriList.append('club coach name')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+
+  if request.form.has_key('cbcoage'):
+    selectClauseList.append('(select coach2.codob from coach coach2, coachin coachin2 where\
+      coach2.coid = coachin2.coid AND coachin2.clid = club2.clid) AS codob' )
+    selectAttriList.append('data of birth')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+  
+  if request.form.has_key('cbconationality'):
+    selectClauseList.append('(select coach2.cnationality from coach coach2, coachin coachin2 where\
+      coach2.coid = coachin2.coid AND coachin2.clid = club2.clid) AS conationality')
+    selectAttriList.append('coach nationality')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+
+  if request.form.has_key('cbclonwer'):
+    selectClauseList.append('club2.clowner' )
+    selectAttriList.append('club owner')
+
+  if request.form.has_key('cbclzone'):
+    selectClauseList.append('club2.clzone')
+    selectAttriList.append('club zone')
+
+
+  if request.form.has_key('cbclwinnum'):
+    selectClauseList.append('(select count(mid) from participatedinm participatedinm2 where\
+      participatedinm2.clid = club2.clid AND participatedinm2.iswinner = True) AS wintimes')
+    selectAttriList.append('win times')
+
+  
+  if request.form.has_key('cbclchampionnum'):
+    #selectClauseList.append('club2.clowner')
+    selectClauseList.append('(select count(competition2.cpyear) from competition competition2 where\
+      competition2.cpchampion = club2.clname) AS championnum' )
+    selectAttriList.append('champion times')
+
+
+
+  if len(selectClauseList) == 0:
+    selectClause = 'select distinct * '
+  else:
+    selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
+
+  # from clause
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, coachin coachin2'
+  fromClause = 'from club club2'
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach'
+
+  secWhereClause = ''
+  if len(secWhereClauseList) == 0:
+    secWhereClause = 'club2.clid in %s' % firstStepClause + ';'
+  else:
+    secWhereClause = ' AND '.join(secWhereClauseList) + ' AND club2.clid in %s' % firstStepClause + ';'
+  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  #print secWhereClauseList
+  print 'totalClause'
+  print totalClause
+
+
+  cursor = g.conn.execute(totalClause)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
 
 
 
