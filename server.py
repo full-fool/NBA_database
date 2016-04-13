@@ -424,6 +424,213 @@ def search_club():
   return render_template("search_result.html", **context)
 
 
+@app.route('/search_match', methods=['POST'])
+def search_match():
+  whereClause = ''
+  whereClauseList = []
+  firstFromList = ['match']
+  fMwinner = request.form['mwinner']
+  if fMwinner != '':
+    whereClauseList.append('match.mwinner = \'%s\'' % fMwinner)
+
+  fMTime = request.form['mtime']
+  if fMTime != '':
+    whereClauseList.append('match.mtime = \'%s\'' % fMTime)
+
+  fMType = request.form['mtype']
+  if fMType != '':
+    whereClauseList.append('match.mtype = \'%s\'' % fMType)
+
+  fMHome = request.form['ptypehome']
+  if fMHome != '':
+    whereClauseList.append('participatedinm.ptype = \'home\' AND participatedinm.clid = club.clid AND club.clname = \'%s\' \
+      AND participatedinm.mid = match.mid' % fMHome)
+    firstFromList.append('club')
+    firstFromList.append('participatedinm')
+
+  fMAway = request.form['ptypeaway']
+  if fMAway != '':
+    whereClauseList.append('participatedinm3.ptype = \'away\' AND participatedinm3.clid = club3.clid AND club3.clname = \'%s\' \
+      AND participatedinm3.mid = match.mid' % fMAway)
+    if not 'club club3' in firstFromList:
+      firstFromList.append('club club3')
+    if not 'participatedinm participatedinm3' in firstFromList:
+      firstFromList.append('participatedinm participatedinm3')
+  
+
+  fSDiff = request.form['scoredifference']
+  if fSDiff != '':
+    whereClauseList.append('participatedinm.ptype = \'away\' AND participatedinm.mid = match.mid AND\
+      participatedinm3.ptype = \'home\' AND participatedinm3.mid = match.mid AND (participatedinm.totalscores - \
+        participatedinm3.totalscores > %s OR participatedinm3.totalscores - participatedinm.totalscores > %s)' % (fSDiff, fSDiff))
+    if not 'participatedinm' in firstFromList:
+      firstFromList.append('participatedinm')
+    if not 'participatedinm participatedinm3' in firstFromList:
+      firstFromList.append('participatedinm participatedinm3')
+
+  fRefereename = request.form['rname']
+  if fRefereename != '':
+    whereClauseList.append('refereein.rid = referee.rid AND refereein.mid = match.mid AND \
+      referee.rname = \'%s\'' % fRefereename )
+    firstFromList.append('referee')
+    firstFromList.append('refereein')
+
+  fPartPlayer = request.form['ppname']
+  if fPartPlayer != '':
+    whereClauseList.append('player.pid = performedin.pid AND performedin.mid = match.mid AND \
+      player.pname= \'%s\'' % fPartPlayer)
+    firstFromList.append('player')
+    firstFromList.append('performedin')
+
+
+
+  firstStepClause = ''
+  if len(whereClauseList) == 0:
+    firstStepClause = '(select mid from match)'
+  else:
+    firstStepClause = '(select distinct(match.mid) from ' + ' , '.join(firstFromList) + '  where ' + \
+      ' AND '.join(whereClauseList) + ')'
+  print firstStepClause
+
+
+  # second step
+  # select clause
+  
+  selectClause = ''
+  secWhereClauseList = []
+  secFromList = []
+  selectClauseList = []
+  selectAttriList = []
+  if request.form.has_key('cbmwinner'):
+    selectClauseList.append('match2.mwinner')
+    selectAttriList.append('match winner')
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+  
+  if request.form.has_key('cbmtime'):
+    selectClauseList.append('match2.mtime' )
+    selectAttriList.append('match time')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+
+  if request.form.has_key('cbmtype'):
+    selectClauseList.append('match2.mtype' )
+    selectAttriList.append('match type')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+  
+  if request.form.has_key('cbptypehome'):
+    selectClauseList.append('(select club.clname from club, participatedinm where club.clid = participatedinm.clid\
+      AND participatedinm.mid = match2.mid AND participatedinm.ptype=\'home\' ) AS home_club')
+    selectAttriList.append('home club')
+
+    # if not 'player2' in secFromList:
+    #   secFromList.append('player2')
+
+  if request.form.has_key('cbptypeaway'):
+    selectClauseList.append('(select club.clname from club, participatedinm where club.clid = participatedinm.clid\
+      AND participatedinm.mid = match2.mid AND participatedinm.ptype = \'away\' ) AS away_club' )
+    selectAttriList.append('away club')
+
+  if request.form.has_key('cbscoredifference'):
+    selectClauseList.append('(select participatedinm1.totalscores - participatedinm2.totalscores from\
+      participatedinm participatedinm1, participatedinm participatedinm2 where participatedinm1.ptype = \'home\' \
+      AND participatedinm2.ptype = \'away\' AND participatedinm1.mid = match2.mid AND participatedinm2.mid = match2.mid) AS score_difference' )
+    selectAttriList.append('score difference')
+
+
+  if request.form.has_key('cbrname'):
+    selectClauseList.append('(select referee.rname from referee, refereein where referee.rid = refereein.rid AND \
+      refereein.mid = match2.mid) AS rname' )
+    selectAttriList.append('referee name')
+
+
+  if request.form.has_key('cbrage'):
+    selectClauseList.append('(select referee.rdob from referee, refereein where referee.rid = refereein.rid AND \
+      refereein.mid = match2.mid) AS rdob')
+    selectAttriList.append('referee date of birth')
+
+  
+  if request.form.has_key('cbrnationality'):
+    #selectClauseList.append('club2.clowner')
+    selectClauseList.append('(select referee.rnationality from referee, refereein where referee.rid = refereein.rid AND \
+      refereein.mid = match2.mid) AS rnationality' )
+    selectAttriList.append('referee nationality')
+
+  if request.form.has_key('cbfoulnum'):
+    selectClauseList.append('(select count(foul.fid) from foul where foul.mid = match2.mid) AS foul_num')
+    selectAttriList.append('foul times')
+
+
+
+  if len(selectClauseList) == 0:
+    selectClause = 'select distinct * '
+  else:
+    selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
+
+  # from clause
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, coachin coachin2'
+  fromClause = 'from match match2'
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach'
+
+  secWhereClause = ''
+  if len(secWhereClauseList) == 0:
+    secWhereClause = 'match2.mid in %s' % firstStepClause + ';'
+  else:
+    secWhereClause = ' AND '.join(secWhereClauseList) + ' AND match2.mid in %s' % firstStepClause + ';'
+  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  #print secWhereClauseList
+  print 'totalClause'
+  print totalClause
+
+
+  cursor = g.conn.execute(totalClause)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(klen=len(selectAttriList), keys = selectAttriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
+
+  #return render_template('index.html')
+
+@app.route('/search_performance', methods=['POST'])
+def search_performance():
+  whereClause = ''
+  whereClauseList = []
+  #firstFromList = ['match']
+  pname = request.form['pname']
+
+
+  mtime = request.form['mtime']
+  #04/06/2016
+  month, day, year = mtime.split('/')[0], mtime.split('/')[1], mtime.split('/')[2]
+  newMtime = '%s-%s-%s' % (year, month, day)
+
+  query = 'select player.pname, performedin.totalscores, performedin.backboard, performedin.assist, \
+  performedin.steals, performedin.penaltyshoot, performedin.twopointshoot, performedin.threepointshoot,\
+  performedin.fieldgoalpercentage\
+   from player, performedin, match where match.mtime = \'%s\' \
+  AND match.mid = performedin.mid AND performedin.pid = player.pid AND \
+  player.pname = \'%s\' ' % (newMtime, pname)
+
+  print query
+  cursor = g.conn.execute(query)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  attriList = ['player name', 'total scores', 'backboard', 'assist', \
+    'steals', 'penaltyshoot', 'twopointshoot', 'threepointshoot', 'fieldgoalpercentage']
+  print 'performance result'
+  print names
+  context = dict(klen=9 , keys = attriList, data = names, recordnum=len(names))
+  return render_template("search_result.html", **context)
 
 
 
