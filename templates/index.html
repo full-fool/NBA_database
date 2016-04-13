@@ -403,8 +403,7 @@
                     <label for="cblosen">Lose times</label></td>
     <td><input type="checkbox" name="cbclchampionnum" id="cbclchampn">
                     <label for="cbclchampn">Champion times</label></td>
-    <td><input type="checkbox" name="cbclpname" id="cbclpnam">
-                    <label for="cbclpnam">Club players</label></td>
+    <td></td>
     </tr>
 </table>
 
@@ -423,7 +422,24 @@
   
   <!------------------------------------------------------>
   <div id="tabs-4">
-  <form method="POST" action="search_performance">
+  <script type="text/javascript">
+function checkinput()
+{
+	var tmp1 = pname1.value
+	var tmp2 = Datepicker2.value
+	if (tmp1 == "" ) {
+		alert("Please fill in the player name")
+		return false;
+	}
+	if (tmp2 == ""){
+		alert("Please fill in the match date")
+		return false;
+	}
+	else
+		return true;
+}
+</script>
+  <form method="POST" action="search_performance" onSubmit="return checkinput();">
    	<div>
             <ul>This part returns you the performance count of your interested players in target matches.</ul>
         <br>
@@ -432,7 +448,7 @@
         		<ul>
                 <table width="100%" border="0">
   <tr>
-    <td>Player name: <input type="text" name="pname"></td>
+    <td>Player name: <input id="pname1" type="text"  name="pname"></td>
     <td>Match time: 
       <input type="text" id="Datepicker2" name="mtime"></td>
   </tr>
@@ -442,6 +458,7 @@
         </li>  
         <br></br>
         <hr>
+
         <button id="Button4" type="submit">Get the result</button>
     </div>
 	</form>
