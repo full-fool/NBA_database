@@ -170,22 +170,23 @@ def another():
 
 
 # Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  print request.form
-  #fetchedName = request.form['name']
-  #print 'fetched name = ' 
-  #print fetchedName
-  tmpQuery = 'INSERT INTO test(name) VALUES (\'%s\')' % fetchedName
-  print tmpQuery
-  #g.conn.execute("""INSERT INTO test VALUES (20, 'helo')""")
-  g.conn.execute(tmpQuery)
-  return redirect('/')
+# @app.route('/add', methods=['POST'])
+# def add():
+#   print request.form
+#   #fetchedName = request.form['name']
+#   #print 'fetched name = ' 
+#   #print fetchedName
+#   tmpQuery = 'INSERT INTO test(name) VALUES (\'%s\')' % fetchedName
+#   print tmpQuery
+#   #g.conn.execute("""INSERT INTO test VALUES (20, 'helo')""")
+#   g.conn.execute(tmpQuery)
+#   return redirect('/')
 
 @app.route('/search_player', methods=['POST'])
 def search_player():
   # first step: select all pid
   # where clause
+  #print 'in search_player'
   whereClause = ''
   whereClauseList = []
   fPname = request.form['pname']
@@ -200,9 +201,9 @@ def search_player():
   if fPage != '':
     nowTime = datetime.datetime.now()
     #currentDate = '%s-%s-%s' % (nowTime.year, nowTime.month, nowTime.day)
-    nowYear = nowTime.year()
-    birthYear = nowYear - fPage
-    whereClauseList.append('player.pdob >= "%s-1-1" AND player.dob <= "%s-12-31"' % (birthYear, birthYear))
+    nowYear = nowTime.year
+    birthYear = nowYear - int(fPage)
+    whereClauseList.append('player.pdob >= \'%s-1-1\' AND player.pdob <= \'%s-12-31\'' % (birthYear, birthYear))
   
   fPposition = request.form['pposition']
   if fPposition != '':
@@ -229,11 +230,10 @@ def search_player():
   if len(whereClauseList) == 0:
     firstStepClause = '(select pid from player)'
   else:
-    firstStepClause = '(select player.pid \
-                        from player, club,  playsin \
-                        where ' + ' AND '.join(whereClauseList) + ')'
+    firstStepClause = '(select distinct(player.pid) from player, club,  playsin where ' + ' AND '.join(whereClauseList) + ')'
 
-
+  #print 'first firstStepClause'
+  #print firstStepClause
   # second step
   # select clause
   selectClause = ''
@@ -261,53 +261,72 @@ def search_player():
     #   secFromList.append('player2')
 
   if request.form.has_key('cbclname'):
-    selectClauseList.append('club2.clname')
+    #selectClauseList.append('club2.clname')
+    selectClauseList.append('(select club2.clname from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
+      playsin2.clid = club2.clid) AS clname' )
     # if not 'club2' in secFromList:
     #   secFromList.append('club2')
     # if not 'playsin2' in secFromList:
     #   secFromList.append('playsin2')
-    secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
+    #secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
   
   if request.form.has_key('cbclowner'):
-    selectClauseList.append('club2.clowner')
-    secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
+    #selectClauseList.append('club2.clowner')
+    selectClauseList.append('(select club2.clowner from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
+      playsin2.clid = club2.clid) AS clowner' )
+    #secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
 
   if request.form.has_key('cbclzone'):
-    selectClauseList.append('club2.clzone')
-    secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
+    #selectClauseList.append('club2.clzone')
+    selectClauseList.append('(select club2.clzone from club club2, playsin playsin2 where playsin2.pid = player2.pid AND\
+      playsin2.clid = club2.clid) AS clzone' )
+    #secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid')
 
   if request.form.has_key('cbmatchnum'):
-    selectClauseList.append('count(performedin2.mid)')
-    secWhereClauseList.append('performedin2.pid = player2.pid')
+    #selectClauseList.append('count(performedin2.mid)')
+    selectClauseList.append('(select count(distinct(mid)) from performedin performedin2 where performedin2.pid = player2.pid) AS matchNum')
+    #secWhereClauseList.append('performedin2.pid = player2.pid')
 
-  if request.form.has_key('cbconame'):
-    selectClauseList.append('coach2.coname')
-    secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player.pid AND coach2.coid = coachin2.coid\
-      AND coachin2.clid = club2.clid')
+  # if request.form.has_key('cbconame'):
+  #   #selectClauseList.append('coach2.coname')
+  #   selectClauseList.append('(select coach2.coname from coach coach2, coachin coachin2, club club2 where player2.pid = )')
+  #   secWhereClauseList.append('club2.clid = playsin2.clid AND playsin2.pid = player2.pid AND coach2.coid = coachin2.coid\
+  #     AND coachin2.clid = club2.clid')
 
   if request.form.has_key('cbfoulnum'):
-    selectClauseList.append('count(foul2.fid)')
-    secWhereClauseList.append('foul2.pid = player2.pid')
+    #selectClauseList.append('count(foul2.fid)')
+    selectClauseList.append('(select count(distinct(foul2.fid)) from foul foul2 where foul2.pid = player2.pid) AS foulnum')
+    #secWhereClauseList.append('foul2.pid = player2.pid')
 
   if request.form.has_key('cbstartnum'):
-    selectClauseList.append('count(startsin2.pid)')
-    secWhereClauseList.append('startsin2.pid = player2.pid')
+    #selectClauseList.append('count(startsin2.pid)')
+    selectClauseList.append('(select count(distinct(startsin2.mid)) from startsin startsin2 where startsin2.pid = player2.pid ) AS partInNum')
+    #secWhereClauseList.append('startsin2.pid = player2.pid')
 
   if request.form.has_key('cbsalary'):
-    selectClauseList.append('playsin2.salary')
-    secWhereClauseList.append('playsin2.pid = player2.pid')
+    #selectClauseList.append('playsin2.salary')
+    selectClauseList.append('(select playsin2.salary from playsin playsin2 where playsin2.pid = player2.pid) AS salary')
+    #secWhereClauseList.append('playsin2.pid = player2.pid')
 
 
   if len(selectClauseList) == 0:
-    selectClause = 'select * '
+    selectClause = 'select distinct * '
   else:
-    selectClause = 'select ' + ' , '.join(selectClauseList) + ' '
+    selectClause = 'select distinct ' + ' , '.join(selectClauseList) + ' '
 
   # from clause
-  fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, \
-    performedin performedin2, coachin coachin2,  foul foul2'
-  secWhereClause = ' AND '.join(secWhereClauseList) + ' AND player2.pid in %s' % firstStepClause + ';'
-  totalClause = selectClause + fromClause + secWhereClause
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach coach2, coachin coachin2'
+  fromClause = 'from player player2'
+  #fromClause = 'from player player2, club club2, playsin playsin2, coach'
+
+  secWhereClause = ''
+  if len(secWhereClauseList) == 0:
+    secWhereClause = 'player2.pid in %s' % firstStepClause + ';'
+  else:
+    secWhereClause = ' AND '.join(secWhereClauseList) + ' AND player2.pid in %s' % firstStepClause + ';'
+  totalClause = selectClause +'\n'  + fromClause + '\n where ' + secWhereClause
+  #print secWhereClauseList
+  print 'totalClause'
   print totalClause
 
 
@@ -317,28 +336,22 @@ def search_player():
 
 
 
-
-
-
-
-
-
-
-
-
-
-  # whereClause = ''
-  # if fPposition != '':
-  #   whereClause += 
-
-
   # print 'fetched name = ' 
   # print fetchedName
   # tmpQuery = 'INSERT INTO test(name) VALUES (\'%s\')' % fetchedName
   # print tmpQuery
-  # #g.conn.execute("""INSERT INTO test VALUES (20, 'helo')""")
-  # g.conn.execute(tmpQuery)
-  # return redirect('/')
+  cursor = g.conn.execute(totalClause)
+
+  names = []
+  for result in cursor:
+    names.append(result['name'])  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data = names)
+
+  return render_template("search_result.html", **context)
+
+  #return redirect('/')
 
 
 
