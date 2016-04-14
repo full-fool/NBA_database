@@ -110,7 +110,14 @@ def search_player():
     nowTime = datetime.datetime.now()
     #currentDate = '%s-%s-%s' % (nowTime.year, nowTime.month, nowTime.day)
     nowYear = nowTime.year
+    for i in fPage:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
+
     birthYear = nowYear - int(fPage)
+
+
     whereClauseList.append('player.pdob >= \'%s-1-1\' AND player.pdob <= \'%s-12-31\'' % (birthYear, birthYear))
   
   fPposition = request.form['pposition']
@@ -124,14 +131,26 @@ def search_player():
   # to be finished
   fMatchNum = request.form['matchnum']
   if fMatchNum != '':
+    for i in fMatchNum:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from performedin where performedin.pid = player.pid) = %s' % fMatchNum)
   
   fFoulNum = request.form['foulnum']
   if fFoulNum != '':
+    for i in fFoulNum:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from foul where foul.pid = player.pid) = %s' % fFoulNum)
 
   fStartNum = request.form['startnum']
   if fStartNum != '':
+    for i in fStartNum:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from startsin where startsin.pid = player.pid) = %s' % fStartNum)
 
   firstStepClause = ''
@@ -302,11 +321,19 @@ def search_club():
 
   fWintimes = request.form['clwinnum']
   if fWintimes != '':
+    for i in fWintimes:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from participatedinm where club.clid = participatedinm.clid AND \
       participatedinm.iswinner=True) = %s' % fWintimes)
 
   fLosetimes = request.form['clwinnum']
   if fLosetimes != '':
+    for i in fLosetimes:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from participatedinm where participatedinm.clid = club.clid) - \
       (select count(*) from participatedinm where club.clid = participatedinm.clid \
       AND participatedinm.iswinner=True) = %s' % fLosetimes )
@@ -328,6 +355,10 @@ def search_club():
 
   fChampTime = request.form['clchampionnum']
   if fChampTime != '':
+    for i in fChampTime:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('(select count(*) from competition where competition.cpchampion = club.clname) = %s' % fChampTime)
 
 
@@ -451,6 +482,10 @@ def search_match():
 
   fMTime = request.form['mtime']
   if fMTime != '':
+    for i in fMTime:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('match.mtime = \'%s\'' % fMTime)
 
   fMType = request.form['mtype']
@@ -476,6 +511,10 @@ def search_match():
 
   fSDiff = request.form['scoredifference']
   if fSDiff != '':
+    for i in fSDiff:
+      if not i in '0123456789':
+        context = dict(klen=0,  keys = [], data = [], recordnum=0)
+        return render_template("search_result.html", **context)
     whereClauseList.append('participatedinm.ptype = \'away\' AND participatedinm.mid = match.mid AND\
       participatedinm3.ptype = \'home\' AND participatedinm3.mid = match.mid AND (participatedinm.totalscores - \
         participatedinm3.totalscores > %s OR participatedinm3.totalscores - participatedinm.totalscores > %s)' % (fSDiff, fSDiff))

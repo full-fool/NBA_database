@@ -270,8 +270,10 @@ def insertPerformedin():
 	#INSERT INTO performedIn VALUES (9, 2, 10, 2,3,1,7,2,2, 50);
 	fileContent = open('insertMatch.sql').read()
 	startFileHandler = open('insertStartsin.sql', 'w')
-	foulFileHandler = open('insertFoul.sql', 'w')
-	performHandler = open('insertPerformedin.sql', 'w')
+	#foulFileHandler = open('insertFoul.sql', 'w')
+	#performHandler = open('insertPerformedin.sql', 'w')
+	foulFileHandler = open('newinsertFoul.sql', 'w')
+	performHandler = open('newinsertPerformedin.sql', 'w')
 	currentFoulId = 1
 	for mid in range(6, 722+1):
 		print 'processing match %s' % mid
@@ -286,34 +288,45 @@ def insertPerformedin():
 		awayPlayerList = [i for i in range(playersDict[awayClubId][0], playersDict[awayClubId][1]+1)]
 		homePlayerNum = len(homePlayerList)
 		awayPlayerNum = len(awayPlayerList)
+		homePerformPlayerList = []
+		awayPerformPlayerList = []
+
+
+
 		homeStartList = []
-		
+
 		# insert 5 starts in info
 		for i in range(5):
 			startId = random.randrange(0, homePlayerNum)
-			while startId in homeStartList:
+			while homePlayerList[startId] in homeStartList:
 				startId = random.randrange(0, homePlayerNum)
-			homeStartList.append(startId)
+			homeStartList.append(homePlayerList[startId])
 			startFileHandler.write('INSERT INTO startsIn VALUES (%s, %s);\n' % (homePlayerList[startId], mid))
 		awayStartList = []
 		for i in range(5):
 			startId = random.randrange(0, awayPlayerNum)
-			while startId in awayStartList:
+			while  awayPlayerList[startId] in awayStartList:
 				startId = random.randrange(0, awayPlayerNum)
-			awayStartList.append(startId)
+			#awayStartList.append(startId)
+			awayStartList.append(awayPlayerList[startId])
 			startFileHandler.write('INSERT INTO startsIn VALUES (%s, %s);\n' % (awayPlayerList[startId], mid))
 
 		# add active players
+		homePerformPlayerList = homeStartList
 		for i in range(3):
 			newPid = random.randrange(0, homePlayerNum)
-			while newPid in homeStartList:
+			while homePlayerList[newPid] in homePerformPlayerList:
 				newPid = random.randrange(0, homePlayerNum)
-			homePlayerList.append(newPid)
+			#homePlayerList.append(newPid)
+			homePerformPlayerList.append(homePlayerList[newPid])
+
+
+		awayPerformPlayerList = awayStartList
 		for i in range(3):
 			newPid = random.randrange(0, awayPlayerNum)
-			while newPid in awayStartList:
+			while awayPlayerList[newPid] in awayPerformPlayerList:
 				newPid = random.randrange(0, awayPlayerNum)
-			awayPlayerList.append(newPid)
+			awayPerformPlayerList.append(awayPlayerList[newPid])
 
 		# add foul and performance of home players
 		for i in range(8):
@@ -321,7 +334,7 @@ def insertPerformedin():
 			for j in range(foulNum):
 				#INSERT INTO foul VALUES (1, 2, 1);
 				foulFileHandler.write('INSERT INTO foul VALUES (%s, %s, %s);\n' % (currentFoulId + j, \
-					homePlayerList[i], mid))
+					homePerformPlayerList[i], mid))
 			currentFoulId += foulNum
 
 			backboard = random.randrange(0, 10)
@@ -333,7 +346,7 @@ def insertPerformedin():
 			totalScore = 1*penalty + 2*twopoint + 3*threepoint
 			fieldPerc = random.randrange(30, 90)
 			performHandler.write('INSERT INTO performedIn VALUES (%s, %s, %s, %s,%s,%s,%s,%s,%s, %s);\n' % \
-				(homePlayerList[i], mid, totalScore, backboard, assist, steals, penalty, twopoint, threepoint, fieldPerc))
+				(homePerformPlayerList[i], mid, totalScore, backboard, assist, steals, penalty, twopoint, threepoint, fieldPerc))
 
 
 		# add foul and performance of away players
@@ -342,7 +355,7 @@ def insertPerformedin():
 			for j in range(foulNum):
 				#INSERT INTO foul VALUES (1, 2, 1);
 				foulFileHandler.write('INSERT INTO foul VALUES (%s, %s, %s);\n' % (currentFoulId + j, \
-					awayPlayerList[i], mid))
+					awayPerformPlayerList[i], mid))
 			currentFoulId += foulNum
 
 			backboard = random.randrange(0, 10)
@@ -354,7 +367,7 @@ def insertPerformedin():
 			totalScore = 1*penalty + 2*twopoint + 3*threepoint
 			fieldPerc = random.randrange(30, 90)
 			performHandler.write('INSERT INTO performedIn VALUES (%s, %s, %s, %s,%s,%s,%s,%s,%s, %s);\n' % \
-				(awayPlayerList[i], mid, totalScore, backboard, assist, steals, penalty, twopoint, threepoint, fieldPerc))
+				(awayPerformPlayerList[i], mid, totalScore, backboard, assist, steals, penalty, twopoint, threepoint, fieldPerc))
 
 	startFileHandler.close()
 	foulFileHandler.close()
