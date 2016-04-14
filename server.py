@@ -19,6 +19,7 @@ from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 import datetime
+import re
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
@@ -670,6 +671,12 @@ def search_performance():
 
   mtime = request.form['mtime']
   #04/06/2016
+  timepattern = re.compile(r'\d{2}/\d{2}/\d{4}')
+  timeresult = timepattern.findall(mtime)
+  if len(timeresult) == 0:
+    context = dict(klen=0,  keys = [], data = [], recordnum=0)
+    return render_template("search_result.html", **context)
+
   month, day, year = mtime.split('/')[0], mtime.split('/')[1], mtime.split('/')[2]
   newMtime = '%s-%s-%s' % (year, month, day)
 
