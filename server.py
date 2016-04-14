@@ -677,8 +677,17 @@ def search_performance():
     context = dict(klen=0,  keys = [], data = [], recordnum=0)
     return render_template("search_result.html", **context)
 
+
   month, day, year = mtime.split('/')[0], mtime.split('/')[1], mtime.split('/')[2]
   newMtime = '%s-%s-%s' % (year, month, day)
+  try:
+    datetime.datetime(year=int(year),month=int(month),day=int(day))
+  except Exception as e:
+    context = dict(klen=0,  keys = [], data = [], recordnum=0)
+    return render_template("search_result.html", **context)
+
+
+
 
   query = 'select player.pname, performedin.totalscores, performedin.backboard, performedin.assist, \
   performedin.steals, performedin.penaltyshoot, performedin.twopointshoot, performedin.threepointshoot,\
