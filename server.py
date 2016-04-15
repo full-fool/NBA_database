@@ -329,7 +329,7 @@ def search_club():
     whereClauseList.append('(select count(*) from participatedinm where club.clid = participatedinm.clid AND \
       participatedinm.iswinner=True) = %s' % fWintimes)
 
-  fLosetimes = request.form['clwinnum']
+  fLosetimes = request.form['cllosenum']
   if fLosetimes != '':
     for i in fLosetimes:
       if not i in '0123456789':
@@ -369,7 +369,8 @@ def search_club():
   else:
     firstStepClause = '(select distinct(club.clid) from ' + ' , '.join(firstFromList) + '  where ' + \
       ' AND '.join(whereClauseList) + ')'
-  #print firstStepClause
+  print 'firstStepClause is '
+  print firstStepClause
 
 
   # # second step
