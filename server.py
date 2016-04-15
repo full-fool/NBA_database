@@ -481,13 +481,16 @@ def search_match():
   if fMwinner != '':
     whereClauseList.append('match.mwinner = \'%s\'' % fMwinner)
 
-  fMTime = request.form['mtime']
-  if fMTime != '':
-    for i in fMTime:
-      if not i in '0123456789':
-        context = dict(klen=0,  keys = [], data = [], recordnum=0)
-        return render_template("search_result.html", **context)
-    whereClauseList.append('match.mtime = \'%s\'' % fMTime)
+  # fMTime = request.form['mtime']
+  # if fMTime != '':
+  #   for i in fMTime:
+  #     if not i in '0123456789':
+  #       context = dict(klen=0,  keys = [], data = [], recordnum=0)
+  #       return render_template("search_result.html", **context)
+  #   whereClauseList.append('match.mtime = \'%s\'' % fMTime)
+
+
+  print 'in search match'
 
   fMType = request.form['mtype']
   if fMType != '':
